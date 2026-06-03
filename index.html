@@ -235,6 +235,7 @@
       <span>TEXT</span>
       <button id="fsUp" aria-label="Larger text">A+</button>
     </div>
+    <button id="saveBtn" class="icon-btn" aria-label="Save a copy to your device" title="Save a copy to your device">⤓</button>
     <button id="themeBtn" class="icon-btn" aria-label="Toggle theme">☾</button>
   </div>
 
@@ -666,6 +667,27 @@ function setTheme(t){
 }
 setTheme(localStorage.getItem('tj-theme') || (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));
 themeBtn.onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+
+/* ============ SAVE A LOCAL COPY ============ */
+const saveBtn=document.getElementById('saveBtn');
+saveBtn.onclick=async()=>{
+  saveBtn.disabled=true;
+  try{
+    let html;
+    try{
+      const r=await fetch(location.href,{cache:'no-store'});
+      if(!r.ok) throw new Error('fetch failed');
+      html=await r.text();
+    }catch(_){
+      html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+    }
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+    a.download='tijaniyyah-handbook.html';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  }finally{saveBtn.disabled=false;}
+};
 
 /* ============ SIDEBAR (mobile) ============ */
 const sidebar=document.getElementById('sidebar');
