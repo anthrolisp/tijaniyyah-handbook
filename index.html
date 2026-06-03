@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ṭarīqah Tijāniyyah Handbook</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root{
+    --bg:#f4efe4;
+    --bg-card:#fbf8f0;
+    --ink:#2a2419;
+    --ink-soft:#6b6151;
+    --accent:#7a5c2e;
+    --accent-deep:#5c4420;
+    --line:#ddd1ba;
+    --gold:#a8842f;
+    --shadow:rgba(60,45,20,.12);
+    --sidebar-w:296px;
+    --reader-max:680px;
+    --fs:18px;
+  }
+  html[data-theme="dark"]{
+    --bg:#1a1712;
+    --bg-card:#221e17;
+    --ink:#ece4d4;
+    --ink-soft:#a89d87;
+    --accent:#c9a45c;
+    --accent-deep:#d8b774;
+    --line:#3a3328;
+    --gold:#d8b774;
+    --shadow:rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'EB Garamond',Garamond,serif;
+    font-size:var(--fs);
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+    transition:background .4s ease,color .4s ease;
+  }
+
+  /* ---------- Sidebar ---------- */
+  #sidebar{
+    position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);
+    background:var(--bg-card);
+    border-right:1px solid var(--line);
+    display:flex;flex-direction:column;
+    z-index:40;
+    transition:transform .32s cubic-bezier(.4,0,.2,1);
+  }
+  .sb-head{
+    padding:26px 24px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .sb-head .ar{font-family:'Amiri',serif;font-size:15px;color:var(--gold);letter-spacing:.5px}
+  .sb-head h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;font-size:23px;line-height:1.12;
+    letter-spacing:.4px;margin-top:3px;
+  }
+  .sb-head .sub{font-size:12.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+
+  nav{flex:1;overflow-y:auto;padding:6px 12px 30px}
+  nav::-webkit-scrollbar{width:8px}
+  nav::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  .nav-group{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);
+    padding:16px 12px 6px;font-weight:600}
+  nav a{
+    display:block;text-decoration:none;color:var(--ink-soft);
+    padding:7px 12px;border-radius:7px;font-size:15.5px;
+    transition:background .15s,color .15s;cursor:pointer;
+    border-left:2px solid transparent;
+  }
+  nav a:hover{background:var(--bg);color:var(--ink)}
+  nav a.active{color:var(--accent-deep);background:var(--bg);border-left-color:var(--gold);font-weight:600}
+
+  /* ---------- Main ---------- */
+  #main{margin-left:var(--sidebar-w);transition:margin .32s}
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:10px;
+    padding:12px 22px;
+    background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .spacer{flex:1}
+  .icon-btn{
+    background:var(--bg-card);border:1px solid var(--line);color:var(--ink);
+    width:38px;height:38px;border-radius:9px;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:16px;transition:.15s;font-family:inherit;
+  }
+  .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+  #menuBtn{display:none}
+  .fs-controls{display:flex;align-items:center;gap:2px;background:var(--bg-card);
+    border:1px solid var(--line);border-radius:9px;padding:2px}
+  .fs-controls button{background:none;border:none;color:var(--ink);width:32px;height:32px;
+    cursor:pointer;font-size:17px;border-radius:7px;transition:.15s}
+  .fs-controls button:hover{background:var(--bg)}
+  .fs-controls span{font-size:11px;color:var(--ink-soft);padding:0 6px;letter-spacing:1px}
+
+  /* ---------- Cover ---------- */
+  #cover{
+    min-height:calc(100vh - 63px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:40px 28px 60px;position:relative;
+    background:
+      radial-gradient(ellipse at 50% 32%, color-mix(in srgb,var(--gold) 9%,transparent), transparent 60%);
+  }
+  .cover-inner{max-width:460px;display:flex;flex-direction:column;align-items:center}
+  .cover-ar{font-family:'Amiri',serif;font-size:26px;color:var(--gold);letter-spacing:1px;margin-bottom:8px;opacity:0;animation:rise .9s .1s ease forwards}
+  .tasbih{width:200px;height:200px;color:var(--accent);margin:6px 0 14px;opacity:0;animation:rise 1s .25s ease forwards}
+  .tasbih circle{fill:var(--accent);stroke:none}
+  .tasbih .nukhta{fill:var(--gold)}
+  .tasbih ellipse.nukhta{fill:var(--gold);stroke:none}
+  .cover-title{font-family:'Cormorant Garamond',serif;font-weight:600;
+    font-size:clamp(38px,9vw,60px);line-height:1.02;letter-spacing:.5px;
+    opacity:0;animation:rise .9s .45s ease forwards}
+  .cover-sub{font-size:14px;letter-spacing:6px;text-transform:uppercase;color:var(--ink-soft);
+    margin-top:10px;opacity:0;animation:rise .9s .6s ease forwards}
+  .cover-line{width:90px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    margin:26px 0;opacity:0;animation:rise .9s .7s ease forwards}
+  .cover-foot{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--ink-soft);
+    opacity:0;animation:rise .9s .8s ease forwards}
+  .enter-btn{margin-top:34px;background:var(--bg-card);border:1px solid var(--line);
+    color:var(--accent-deep);font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;
+    padding:11px 26px;border-radius:30px;cursor:pointer;transition:.2s;letter-spacing:.5px;
+    opacity:0;animation:rise .9s .95s ease forwards}
+  .enter-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px)}
+  .scroll-hint{position:absolute;bottom:22px;font-size:11px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--ink-soft);opacity:0;animation:fadeHint 1.4s 1.3s ease forwards}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes fadeHint{from{opacity:0}to{opacity:.6}}
+
+  article{max-width:var(--reader-max);margin:0 auto;padding:54px 28px 140px}
+  section{scroll-margin-top:76px;margin-bottom:18px}
+
+  h2.title{
+    font-family:'Cormorant Garamond',serif;font-weight:600;
+    font-size:clamp(30px,5vw,42px);line-height:1.08;letter-spacing:.4px;
+    margin:18px 0 6px;
+  }
+  .eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600}
+  .rule{height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:20px 0 30px;width:120px}
+  p{margin:0 0 17px}
+  .lead{font-size:1.08em;color:var(--ink-soft);font-style:italic}
+  h3{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:25px;margin:34px 0 12px;color:var(--accent-deep)}
+  ul.clean{list-style:none;margin:0 0 18px}
+  ul.clean li{position:relative;padding-left:24px;margin-bottom:10px}
+  ul.clean li::before{content:"◆";position:absolute;left:0;top:1px;color:var(--gold);font-size:10px}
+  ol.num{margin:0 0 18px 4px;padding-left:22px}
+  ol.num li{margin-bottom:10px;padding-left:6px}
+  ol.num li::marker{color:var(--gold);font-weight:600}
+  .meta{font-size:14px;color:var(--ink-soft);font-style:italic;margin-top:8px}
+  blockquote{border-left:3px solid var(--gold);padding:4px 0 4px 20px;margin:20px 0;
+    font-style:italic;color:var(--ink-soft)}
+
+  /* ---------- Practice blocks ---------- */
+  .practice-summary{
+    background:var(--bg-card);border:1px solid var(--line);border-radius:14px;
+    padding:22px 26px;margin:24px 0 30px;box-shadow:0 4px 20px var(--shadow);
+  }
+  .practice-summary h3{margin-top:0}
+  .count-row{display:flex;justify-content:space-between;gap:14px;padding:8px 0;
+    border-bottom:1px dashed var(--line);font-size:16px}
+  .count-row:last-child{border-bottom:none}
+  .count-row .ct{color:var(--gold);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  .tabs{display:flex;gap:6px;margin:26px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tab{
+    background:none;border:none;border-bottom:2px solid transparent;
+    color:var(--ink-soft);font-family:'Cormorant Garamond',serif;font-size:18px;
+    padding:8px 16px;cursor:pointer;transition:.15s;margin-bottom:-1px;font-weight:500;
+  }
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--accent-deep);border-bottom-color:var(--gold)}
+  .pane{display:none;padding-top:24px;animation:fade .35s ease}
+  .pane.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .verse{margin-bottom:22px}
+  .verse-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);
+    font-weight:600;margin-bottom:4px;display:flex;justify-content:space-between;align-items:baseline}
+  .verse-label .times{color:var(--ink-soft);letter-spacing:1px;font-weight:500;text-transform:none;font-style:italic}
+  .verse .body{font-size:1.05em;line-height:1.85}
+  .verse.translit .body{font-size:1.1em;line-height:1.9;letter-spacing:.15px}
+  .verse.english .body{font-style:italic}
+  .verse.arabic .body{
+    font-family:'Amiri',serif;direction:rtl;text-align:right;
+    font-size:1.7em;line-height:2.25;
+  }
+
+  footer{max-width:var(--reader-max);margin:0 auto;padding:30px 28px 60px;
+    border-top:1px solid var(--line);color:var(--ink-soft);font-size:13.5px;text-align:center}
+
+  #overlay{display:none;position:fixed;inset:0;background:rgba(20,16,10,.5);z-index:35}
+
+  @media(max-width:880px){
+    :root{--reader-max:100%}
+    #sidebar{transform:translateX(-100%);box-shadow:8px 0 40px var(--shadow)}
+    #sidebar.open{transform:none}
+    #main{margin-left:0}
+    #menuBtn{display:inline-flex}
+    #overlay.show{display:block}
+    article{padding:34px 20px 120px}
+  }
+</style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="ar">الطريقة التجانية</div>
+    <h1>Ṭarīqah Tijāniyyah</h1>
+    <div class="sub">Handbook</div>
+  </div>
+  <nav id="nav"></nav>
+</aside>
+
+<div id="overlay"></div>
+
+<div id="main">
+  <div class="topbar">
+    <button id="menuBtn" class="icon-btn" aria-label="Menu">☰</button>
+    <div class="spacer"></div>
+    <div class="fs-controls">
+      <button id="fsDown" aria-label="Smaller text">A−</button>
+      <span>TEXT</span>
+      <button id="fsUp" aria-label="Larger text">A+</button>
+    </div>
+    <button id="themeBtn" class="icon-btn" aria-label="Toggle theme">☾</button>
+  </div>
+
+  <div id="cover">
+    <div class="cover-inner">
+      <div class="cover-ar">الطريقة التجانية</div>
+      <svg class="tasbih" viewBox="0 0 300 340" aria-hidden="true">
+        <g>
+          <!-- main loop of beads -->
+          <g id="bead-loop"></g>
+          <!-- alif head-piece + tassel -->
+          <g id="tassel"></g>
+        </g>
+      </svg>
+      <h1 class="cover-title">Ṭarīqah Tijāniyyah</h1>
+      <div class="cover-sub">Handbook</div>
+      <div class="cover-line"></div>
+      <div class="cover-foot">Wird · Waẓīfah · Ẓikrul Jumuʾah</div>
+      <button id="enterBtn" class="enter-btn">Begin Reading</button>
+    </div>
+    <div class="scroll-hint">scroll</div>
+  </div>
+
+  <article id="content"></article>
+
+  <footer>
+    Compiled with reference to <em>Daratul-Tāj</em> by Shaykh Ḥassan Cisse (ra) and Shaykh Al-Haji Lawal.<br>
+    1st Thul Ḥijja 1422 · 14 February 2002
+  </footer>
+</div>
+
+<script>
+/* ============ CONTENT MODEL ============ */
+const SECTIONS = [
+  {group:"Front Matter", id:"about", title:"About This Edition", nav:"About This Edition", eyebrow:"Acknowledgements & Provenance", html:`
+    <p class="lead">This handbook was compiled by a Tijānī community in Cape Town, South Africa, for the devotees and students of the Ṭarīqah Tijāniyyah.</p>
+    <p>It has been compiled with reference to <em>Daratul-Tāj</em> by Shaykh Ḥassan Cisse (ra) and Shaykh Al-Haji Lawal.</p>
+    <p>May Allāh accept the effort and grant abundant reward to all who have assisted in the publication of this handbook, inshāʾAllāh.</p>
+    <p>Sincere thanks are due to the Muqaddam in Cape Town, South Africa, Sidi Anwar Aḥmad Bayat Cisse, for his spiritual and moral guidance. May Allāh make this book a means of granting true love for the Shaykh and for the Ṭarīqah.</p>
+    <p class="meta">Originally compiled 1st Thul Ḥijja 1422 · 14 February 2002.</p>
+    <h3>About this digital edition</h3>
+    <p>This is a faithful digital rendering of the original printed handbook, prepared for ease of reading on phones and computers. The text — the Foreword, Introduction, biographies, conditions, and the full Wird, Waẓīfah and Ẓikrul Jumuʾah in transliteration, English and Arabic — follows the original. The portrait photographs of the Shuyūkh that appeared in the print edition are not reproduced here.</p>
+    <p>The awrād contained herein are the sacred liturgy of the Ṭarīqah Tijāniyyah and are taken under the authority of a Muqaddam. This edition is offered in service to the tradition and to its compilers; any errors in transcription are unintentional, and correction is welcomed.</p>
+  `},
+
+  {group:"Front Matter", id:"foreword", title:"Foreword", nav:"Foreword", html:`
+    <p class="lead">We begin in the Name of Allāh, the Compassionate the Merciful. Praise be upon the One who has bestowed on us His infinite bounties and grace. Peace and blessings of Allāh be upon the Holy Prophet (SAW), the Opener and Leader of the most-straight path.</p>
+    <p>Alhamdulillah, through the duʾās and devotion of all our brothers and sisters of the Ṭarīqah, we are in a position today to compile a handbook, essential to all our devotees and students of the Ṭarīqah Tijāniyyah.</p>
+    <p>In this handbook we have given a brief biography of Shaykh Aḥmad Al-Tijāni (ra), Shaykh Ibrāhīm Niasse (ra) and our beloved Shaykh Ḥassan Cisse (ra).</p>
+    <p>This handbook contains the Wird, the Waẓīfah and Ẓikrul Jumuʾah. It includes the guidelines on the conditions, rules and the Adab (Manners) of the Ṭarīqah. InshāʿAllāh through this a student can achieve the maximum benefit from the practices of the Ṭarīqah.</p>
+    <p>We are admittedly aware of our shortcomings and humbly beg that you overlook all unintentional errors.</p>
+  `},
+
+  {group:"Front Matter", id:"introduction", title:"Introduction", nav:"Introduction", eyebrow:"The Tijāniyya · Ṭarīqah of the 20th Century", html:`
+    <p>Ṭarīqah Tijāniyyah is a path, a way (Ṭarīqah), and a method of studying and putting into practice Islamic Spiritual Science (Taṣawwuf). Spiritual Science has at times been misleadingly called Mysticism. However, in Islām it is a regular Science with its set laws and a full scheme of knowledge, in detail. It is based on definite experiences that can be reproduced, just like in any other science. Every person passes through the same stages in their spiritual journey as the Masters before them. Even the humblest learners can at least aspire to develop a sense of the presence of Allāh and acquire an increasing control over their passions and desires for things worldly.</p>
+    <h3>Studying Spiritual Science is a means of learning</h3>
+    <ul class="clean">
+      <li><strong>Murāqabah</strong> — to see Allāh in everything (i.e. being conscious of Allāh at all times)</li>
+      <li><strong>Mushāhadah</strong> — to witness Allāh in everything</li>
+      <li><strong>Maʾrifah</strong> — to know, or to experience Allāh in everything</li>
+    </ul>
+    <h3>The Ṭarīqah Tijāniyyah is based on three principles</h3>
+    <p><strong>(1) Asking Allāh for forgiveness.</strong> It is really unconscionable for a Muslim to stop his brother in Islām from saying <em>astaghfirullāh</em>. None of us is infallible. The Prophet (SAW) directed us by saying, "Your sickness is sin, and the remedy of your sickness is to say astaghfirullāh." In Sūrah Ḥadīd (57), āyah 21, we are told, "Be ye foremost (in seeking) forgiveness from your Lord." Despite the Prophet's infallible station, he used to ask Allāh for forgiveness more than one hundred times every day.</p>
+    <p><strong>(2) To say Lā ʿilāha illā Allāh.</strong> The Prophet (SAW) said, "The best word I have ever said, together with the previous Prophets, is the word Lā ʿilāha illā Allāh." In Sūrah Al-Baqarah (2), āyah 152: "So, remember Me; I will remember you." And in Sūrah Jumuʾah (62), āyah 10: "and celebrate the Praises of Allāh often (and without stint) that ye may prosper."</p>
+    <p><strong>(3) Salāt ʾalā al-Nabī</strong> — the offering of prayers upon the Prophet (SAW). Allāh ordered the community of believers to offer prayers upon the Prophet after saying that He and His angels are doing it (Sūrah Aḥzāb (33), āyah 56). Moreover, the Prophet (SAW) said in the Hadith, "Whoever offers one prayer on me, Allāh will offer ten on him; if he makes it ten, Allāh will make it one hundred for him; if he makes it one hundred, Allāh will make it one thousand for him; if he makes it a thousand, he will enter Paradise shoulder to shoulder with me." So, these are the principles and some of the bases of support for the Dhikr of the Ṭarīqah Tijāniyyah. It is derived solely from Qurʿān and Ḥadīth.</p>
+    <p>In the final analysis, we are Muslims looking for the Truth, and wherever we see the Truth, we shall follow. The Ṭarīqah Tijāniyyah is based purely on Qurʿān and Ḥadīth. To describe the Ṭarīqah, we will say that it is simply to rule oneself according to the teachings of the Qurʿān and the teachings of the Prophet (SAW). The Ṭarīqah Tijāniyyah was founded by Shaykh Aḥmad Al-Tijāni (ra), who lived from 1737 to 1815. The Ṭarīqah was granted to Shaykh Aḥmad Al-Tijāni (ra) from the Prophet (SAW). It should be noted that to see the Prophet (SAW) after his death is not impossible. Until today, virtuous Muslims are still seeing him and meeting him.</p>
+    <p>In the Aḥādīth [Ṣaḥīḥ Muslim, vol. 4, Kitāb Al-Ruʿyah, The Book of Vision, Chapter 948, page 1225], (5635) Abū Hurairah reported Allāh's Messenger (SAW) as saying, "He who saw me in a dream in fact saw me, for the satan does not appear in my form." In another report (5636) Abū Hurairah reported, "I heard Allāh's Messenger (SAW) as saying, 'He who saw me in a dream would soon see me in a state of wakefulness,' or 'as if he saw me in a state of wakefulness, for the satan does not appear in my form.'" And, (5637) Abū Qatādah reported Allāh's Messenger (SAW) as saying, "He who saw me in a dream in fact saw the truth (what is true)."</p>
+    <p>In Al-Ghazāli's <em>Mishkāt Al-Anwar</em> (The Niche For Lights), by W. H. T. Gardiner, on page 141, he says, "When the Prophet (SAW) said, 'I saw Abdur Raḥmān enter Paradise crawling,' you are not to suppose that he did not see him thus with his own eyes. No, awake he saw him, as a sleeper might see him in a dream, even though the person of Abdur Raḥmān bin ʾAwf was at the time asleep in his house. The only effect of sleep in this and similar visions is to suppress the authority of the senses over the soul, which is the inward light divine; for the senses preoccupy the soul, drag it back to the Sense-world, and turn a man's face away from the world of the Invisible and of the Realm Supernatural. But, with the suppression of sense, some of the prophetical lights may become clarified and prevail; in as much as the senses are no longer dragging the soul back to their own world, nor occupying their whole attention. And so, it sees in waking what others see in sleep. Therefore, we should know that to see the Prophet (SAW) today is not impossible, and that Allāh provided this gift for His beloved and righteous servants."</p>
+  `},
+
+  {group:"Front Matter", id:"conditions", title:"Conditions for Initiation", nav:"Conditions of Initiation", html:`
+    <p class="lead">Conditions for initiation into Ṭarīqah Tijāniyyah.</p>
+    <ul class="clean">
+      <li>This oath is taken with the intention of continuous practice until death, from a Muqaddam with correct permission or authority.</li>
+      <li>To observe the five prayers in congregation if possible.</li>
+      <li>Be kind to your parents (Muslim or non-Muslim).</li>
+      <li>Don't neglect the Wird.</li>
+      <li>Avoid visiting other Awliyā, living or dead, with the intention to seek spiritual benefit from them.</li>
+      <li>The student must not practice any other Ṭarīqah other than Tijāniyyah.</li>
+      <li>To believe, surrender, and submit to all that is said by the Shaykh.</li>
+      <li>To love Shaykh Aḥmad Al-Tijāni (ra).</li>
+      <li>Respect the brotherhood of Tijāniyyah and don't cause harm to any of them.</li>
+      <li>Respect all Awliyā (friends of Allāh).</li>
+      <li>Love all of Allāh's creations and be nice to them.</li>
+      <li>The enemies of the Shaykh should also be your enemies.</li>
+      <li>To make Tahajjud at night.</li>
+      <li>Keep making the Sunnah before and after the Farḍ prayers.</li>
+      <li>Be Truthful.</li>
+      <li>Don't boast about being a Tijāni.</li>
+      <li>Don't give initiation into the Ṭarīqah without permission (without being a Muqaddam).</li>
+    </ul>
+  `},
+
+  {group:"The Masters", id:"tijani", title:"Shaykh Aḥmad Al-Tijāni", nav:"Shaykh Aḥmad Al-Tijāni (ra)", eyebrow:"Founder · 1737 – 1815", html:`
+    <p>Shaykh Aḥmad al-Tijāni is the founder of Ṭarīqah Tijāniyyah. His full name is Aḥmad bin Muḥammad bin al-Mukhtār bin Sālim. His father was Muḥammad al-Mukhtār bin Aḥmad bin Maḥmad bin Salim, a well-respected man of learning. Shaykh Aḥmad al-Tijāni's lineage has been traced back to the Prophet (SAW) through Imām Ḥasan (ra), son of the Prophet (SAW).</p>
+    <p>It was after the Prophet (SAW) appeared to him, while he was in a state of wakefulness, that he informed his students and followers that the Prophet (SAW) had authorized him to start his work of spiritual training and guidance, and had been assigned the Wird and Waẓīfah of the Ṭarīqah. Shaykh Sīdi Aḥmad al-Tijāni was born in a village in Algeria called ʾAin Mādi in 1737. Ain Mādi is located in Northern-Central Algeria about 30 miles from the city of Laghuat. His father lived and taught in ʾAin Mādi.</p>
+    <p>Shaykh Tijāni became distinguished early in his life. By the age of seven he had memorised the Qurʿān under Muḥammad bin Baʾafiyya, and the Mukhtasar by Shaykh Sīdi Khalīl, which was considered a standard legal text in West and North Africa. Before he reached puberty, he was known for his knowledge, intelligence, modesty, and piety by the religious scholars of his time. He learned the fine points of Islamic Law through the Maliki Madhab, which was taught to him by his teacher Muḥammad ibn Hamwi al-Tijāni, who was also called Abū ʾAbdullāh. Afterwards he memorised several books, among which are the Lakhdāri, the Risālah of Imām Qairawāni, the Khalīl, and the Muqaddimah of ibn Rushd. He also studied the Risālah Jamāʾat al-Sūfiyya bi bilād al-Islām by Abū al-Qāsim al-Qushairi, and the Muqaddimāt of Shaykh ʾAbd al-Raḥmāna al-Akhdari.</p>
+    <p>Shaykh Aḥmad al-Tijāni became an orphan in 1752. His mother and father died during a smallpox epidemic (1752–1753), while he was only sixteen years old. He then decided to further his own education, which he did with great enthusiasm. In 1757, five years later, he went to Fez to apply himself to the study of the Prophetic Traditions (Ḥadīth), to meet Sufi Shaykhs, and to take advantage of the lessons given by various renowned scholars from different countries. By the age of twenty-one, he was firmly grounded in religious learning. He also received diplomas conferring on him the authority to teach Islamic Sciences.</p>
+    <p>During this time, Shaykh Tijāni felt a call for the Sufi life and thereafter participated in Sufi brotherhoods: the Sufi order of Aḥmad al-Ḥabīb bin Muḥammad, the Qādiriyyah, and the Nāṣiriyyah. A Walī by the name of Muḥammad bin al-Ḥasan al-Wanili predicted that Shaykh Tijāni would achieve spiritual realization in the desert. Thus, the Shaykh went to a village on the outskirts of the desert called Al-Abiaḍ and settled in the Zāwiya of Sidi ʾAbdul Qādir bin Muḥammad, where he pursued Allāh and taught for five years. After a stay in Al-Abiaḍ, the Shaykh began traveling to Makkah. On his way he stopped at the town of Azwāwi, near Algiers, where he was initiated into the Khalwatiyya Sufi order by a Muqaddam named Maḥmad bin Abdur Raḥman. In 1774, when he finally reached Makkah, he met an Indian Sufi Shaykh named Aḥmad bin ʾAbdullāh through the Indian Shaykh's servant. The Sufi Shaykh claimed to have been forbidden to hold discussions with any human being except his own servant. After Aḥmad bin ʾAbdullāh died, it was said that Shaykh Tijāni had received all of his occult mystical powers from him, through Tarqiyyah.</p>
+    <p>Later, Shaykh Aḥmad al-Tijāni went to Madīnah to visit the Prophet's (SAW) tomb where he met the leader of the Khalwatiyya Sufi order, Shaykh ʾAbdul Karīm al-Sammān. Shaykh ʾAbdul Karīm al-Sammān informed Shaykh Tijani that he was to become Quṭub al-Aqṭāb (the Dominant Authority, or Pole of Poles) among the Awliyā. Leaving Madīnah, this idea led him to spend a prolonged period of seclusion (khalwah) in dhikr and contemplation, in the village of Abī Sanghūm or Samʾhūn, which is a Saharan oasis located south of Greyville. During his first year of his stay in Abī Sanghūm, Shaykh Aḥmad al-Tijāni was blessed with the vision of Prophet Muḥammad (SAW).</p>
+    <blockquote>He announced to his followers that the Prophet (SAW) appeared to him in a wakeful state, and commanded him to leave all the ways (paths / ṭuruq) he had been following before that time, saying, "No one will reproach you, for I myself will be your intercessor in front of your Lord and your Helper." He informed his following that the Prophet (SAW) asked him to accept the rank of khalīfah of the Messenger of Allāh, and that the Prophet himself (SAW) assigned him the Wird and the new conditions of the ṭarīqah, saying, "Keep this ṭarīqah without retiring from the world, nor ceasing to interact with people until you reach the spiritual station that is promised to you, maintaining your state without any undue mortification nor cultural efforts." (Jawāhir al-Maʾāni, p.32, Cairo edition)</blockquote>
+    <p>The Prophet (SAW) also told him that these prayers (awrād) were such that if someone accepted them from Shaykh Tijāni, they have accepted the perfected practice of Ṭarīqah. Shaykh Aḥmad Tijani was given the position of Al-Khatm al-Wilāyah, the Seal of Sainthood, and this meant that Shaykh Tijāni had obtained a position never to be reached again by the Saints that come after him.</p>
+    <p>The Ṭarīqah Tijāniyyah was founded in the year of 1778 (1190 AH). From 1781 to 1799 (about twenty years), Shaykh Aḥmad al-Tijāni was the main teacher of the doctrines of the ṭarīqah. He travelled through the Sahara, the Sudan, and Tunisia setting up Zawiyyas, and nominating pious Muqaddams. At that time, the majority of his disciples and students were ʾUlamāʿ (religious scholars), Fuqahā (learned in jurisprudence), Qadis (judges), and Muftis (officially appointed religious heads, usually of a particular country), such that until this day the Tijāniyyah Ṭarīqah is also known as "the Ṭarīqah of the ʾUlamāʿ".</p>
+    <p>Around the years 1798 and 1799, and in the midst of growing political difficulties, Shaykh Tijāni was compelled to leave his native country of Algeria and settled in Fez, Morocco. He was already well-known and respected there. Shaykh Aḥmad Tijāni was well-known for his strict observance of the Qurʿān, the Sunnah of the Prophet (SAW), and the principles of the other main Islamic sources. He was quoted as saying to his followers, "If you hear someone quoting me, place the statement on the scale of the noble Sharīʾah; if it balances, take it, if it doesn't, leave it. For within the noble Qurʿān and Ḥadīth you will find the Ṭarīqah Tijāniyyah. Outside the circle of Qurʿān and Ḥadīth, there is no such thing."</p>
+    <p>Afterwards, throughout Sub-Saharan Africa the expansion of the Ṭarīqah was swift and broad, primarily owing to the Mauritanian, Muhammad al-Hāfiẓ bin al-Mukhtār bin al-Habīb al-Beddi. Within thirty years of the Shaykh's exile, all the Ida Uʾāli (a noble Mauritanian tribe) had embraced the "path" that was, until then, propagated up to Senegal, Niger, Mali and even further south. One of the best-known figures of the ṭarīqah and a mujāhid of great renown is Shaykh Al-Ḥājj ʾUmar Tāl (or ʾUmar Al-Fūti, named after Futa Djallon, his native region). Following him, other prominent shuyūkh of Ṭarīqah Tijāniyyah include Al-Ḥājj Malik Sy, Shaykh Saʾīd Ba and the Shaykh al-Islām, Shaykh Ibrāhīm Niasse al-Kaolakhy.</p>
+  `},
+
+  {group:"The Masters", id:"niasse", title:"Shaykh Ibrāhīm Niasse", nav:"Shaykh Ibrāhīm Niasse (ra)", eyebrow:"1900 – 1975 · Owner of al-Fayḍah", html:`
+    <p>Shaykh Ibrāhīm Niasse was born in Senegal on October 17, 1900 (15 Rajab, 1320 AH). He was the son of al-Hājj Abdullah Niasse and grandson of Muḥammad Niasse, both of whom were well known members of the ʾulamā of Senegal. Growing up in an intellectual environment strengthened his grasp of the Islamic sciences. His father taught him Qurʿān with its Tafsīr and Ḥadīth with their sharḥ (explanation). He also taught him Fiqh and the science of Taṣawwuf from the well-known books in use among the majālisu al-ʾilm in Senegal, circles in which students gather around the sheikh in search of knowledge.</p>
+    <p>When Shaykh Ibrāhīm (ra) entered upon the Sufi path, he took the Ṭarīqah Tijāniyyah from his father. The step was momentous, for it was within this ṭarīqah that he was to play a major role. It was, in fact, a role without parallel since Shaykh ʾUmar Tāl al-Futi's earlier role in the spread of the Tijāniyyah.</p>
+    <p>Shaykh Ibrāhīm was thus blessed with a special charisma for his mission. It should not surprise us, therefore, that his advent was foretold not only by Shaykh Aḥmad al-Tijāni (ra), but also by Uthman Dan Fodio (died 1871). Shaykh Aḥmad al-Tijāni predicted, "A fayḍah, or flood, will overwhelm my companions to the point that people will enter our path (ṭarīqah) in multitudes. This fayḍah will come at a time when mankind will be in a state of utmost difficulties." Shaykh Ibrāhīm (ra) began his mission in 1929, the year, we recall, of the beginning of the Great Depression. Prior to the time of Shaykh Ibrāhīm, there were many claimants to the description of the fayḍah. Yet, in none of them is the characteristic so well reflected as it is in him. Moreover, this view has been corroborated by the acknowledgement of many Tijāni leaders that Shaykh Ibrāhīm (ra), indeed, owned al-Fayḍah.</p>
+    <p>Shaykh Ibrāhīm enjoyed such a wide acceptance as a leader among the Tijānis that the Mauritanian Arabs, who had first brought the Ṭarīqah Tijāniyyah to Senegal, came back in order to renew their ṣalāṣil (silsilahs) with him. They followed him in his movement of reform towards the Prophet's (SAW) Sunnah and in uniting the Tijāniyyah. Although his father had joined the Ṭarīqah in 1875, it came to pass that the Shaykh, his son, became the highest-ranking Tijāni. One can truly say that Shaykh Ibrāhīm Niasse (ra) was the Uthman Dan Fodio of his time. Indeed, his message was full of truth, so that many of his followers believed him to be the Mujaddid of his age.</p>
+    <p>Although Uthman Dan Fodio had fought a jihād of the sword, the jihād of Shaykh Ibrāhīm was fought with the pen, with speeches and prayers. In some fashion, the age in which he lived required this form of jihād. Thus, he communicated to followers all over the African continent, in parts of Asia, in both the Near and the Far East. In Africa alone, his followers were counted in the millions. The nature of the movement he initiated is such that, even in the decades since the Shaykh's death, it is still gathering followers on the American continent and adjacent isles, places which the Shaykh never visited.</p>
+    <p>Shaykh Ibrāhīm (ra) was a staunch advocate of restoring the proper ritual observances of the Prophet's (SAW) pure Sunnah. Some people had become careless and had begun to omit some of the recommended practices of the Prophet (SAW). As a spiritual guide in taṣawwuf, Shaykh Ibrāhīm wrote many books explaining Sufism and the possibility of spiritual perfection in the modern age. Perhaps the most famous and widely read was <em>Kāshiful Ilbās</em>, The Removal of Confusion. It was written in Arabic and explains the real meaning of Sufism. In it, the Shaykh states that taṣawwuf possesses a definition, subject, matter, name, compilers, sources, laws, problems, attributes, and results. Everyone who takes up its study should be familiar with these ten points. Taṣawwuf is to adopt every worthy form of behaviour and to eschew unworthy forms of action. In fact, it is to adopt the character of the Qurʿān and Sunnah. One must give himself entirely over to Allāh, the Exalted, in whatever He wills, just as He wills.</p>
+    <blockquote>A certain poet once said, "Sufism is not to wear woollen garments or affect worn out clothing. It is good behaviour and good manners (adab)." Another said, "Sufism is not to wear a woollen coat and patch it, nor to weep when the singer sings. It is not to cry out, nor to dance and make merry. It is not to feign fainting as if one is mad. Rather, taṣawwuf is being pure without defilement and following the truth of Qurʿān and the religion."</blockquote>
+    <p>The Shaykh encouraged those following him to learn Arabic and their religion well, in order to stand as a bulwark against false doctrines. By the same token, his mind was not closed to learning other languages besides Arabic. He said, "Had I known more languages, I could have reached more people."</p>
+    <p>Shaykh Ibrāhīm played a major role in the Muslim world. He was a member of many organizations: The Muslim World League (Rabiṭatul ʾĀlamil Islāmi), Muʿtamarul ʾĀlamil Islāmi in Karachi, Majmʾa1 Buḥūthil Islāmiyyah and Majlisu ʾala li-sh-Shuʿūnil Islāmiyyah, both of which are organisations based in Egypt. In all of these organisations, he was highly regarded, especially for his writings on the religion, some forty-nine books, all in Arabic, and many articles and poems.</p>
+    <p>Yet, it was not only religious organizations which held Shaykh Ibrāhīm in esteem. Many governments also honoured him. Among his many awards for excellence are the Medallion of the Throne (Morocco), Medallion of the Republic of Tunisia, the Medallion of Nigeria, the Legion d'Honneur (France), and the Medal of Merit of the Society of Ancient Warriors (France). He received several medals from the government of Senegal, among the highest of which was the Grand Croix. He also received an honorary doctorate from Libya.</p>
+    <p>Shaykh Ibrāhīm Niasse (ra) passed away on July 26, 1975 (15 Rajab, 1395 A.H.) leaving behind him the massive and splendid mosque in Kaolack which is in a constant state of renovation, and a number of Islamic institutes where the Arabic language, Qurʿān, Tafsīr, Fiqh and Islamic jurisprudence are taught to thousands of students, thus true to the principle laid out by the founder who insisted that ʾilm is essential to every disciple and a must for every Muslim.</p>
+    <p>Today, the muqaddams of the Shaykh are many. Among some of the most prominent ones is his grandson, Shaykh Ḥassan Cisse (ra) of Senegal.</p>
+  `},
+
+  {group:"The Masters", id:"cisse", title:"Shaykh Ḥassan Cisse", nav:"Shaykh Ḥassan Cisse (ra)", eyebrow:"b. 1945 · Brought the Ṭarīqah to America", html:`
+    <p>Shaykh Ḥassan Cisse (ra) was born in Kaolack, Senegal in December, 1945. He is the son of Shaykh Sayyidinā ʾAli Cisse and he is the first grandson of Shaykh Al-Islām, Al-Ḥājj Ibrāhīm Niasse (ra) who illuminated the essence of Islam throughout West Africa, both of whom are regarded as renowned Islamic scholars. After memorizing the Holy Qurʿān at an early age, Shaykh Ḥassan (ra) completed his elementary and post elementary studies in Senegal.</p>
+    <p>Educated in Senegal, Mauritania, Egypt, England and the United States, he holds a Bachelor of Arts Degree in Islamic Studies and Arabic Literature from Ain Shams University in Cairo, Egypt. He holds a Diploma in French Language, a Certificate in English Language and a Master of Philosophy Degree from the University of London. During the time that he was engaged in research toward a PhD in Islamic Studies at North Western University in Chicago, his father, Shaykh ʾAli Cisse (ra) passed away. He was then recalled to Senegal to assume the inspired work that had given direction and meaning to millions of seekers of truth in Africa, Asia, Europe, and especially in the United States.</p>
+    <p>Since first coming to America in 1976, he had been teaching, guiding, inspiring Muslims to fear Allah and love Prophet Muhammad (SAW), and always reminding us to do what Allāh says do, and stop where Allāh says stop.</p>
+    <p>Al Ḥamdu li-llah. Shaykh Ḥassan Cisse (ra) is the Chief Imām of the Grand Mosque in Madinah Kaolack, Senegal and one of the leaders of the Ṭarīqah Tijāniyyah. Ṭarīqah Tijāniyyah is a Sufi brotherhood based exclusively on Qurʿān and Ḥadīth. Shaykh Hassan Cisse brought the Ṭarīqah to the United States in 1976, introducing it to Muslims in America for the very first time. The Shaykh is the Founder and Chairman of The African American Islamic Institute, Inc., a tax exempt, international non-governmental organization (NGO) which functions in Senegal, The Gambia, Mauritania, Ghana, Nigeria, Togo, Benin, Burkina Faso, Ivory Coast and in the United States.</p>
+    <p>Over the past twenty years, the Shaykh has travelled to various U.S. cities, many of which have honored him as a distinguished Islamic scholar and religious leader, and for the work of The African American Islamic Institute, Inc. Shaykh Hassan Cisse (ra) has been awarded the Keys to the City of Cleveland, OH, Detroit, MI, and Washington, D.C., where June 16, 1986 was proclaimed Shaykh Hassan Cisse Day, and Memphis, TN., which honored him as an Honorary Citizen of Memphis. He was also awarded a Certificate of Merit by the City of New Orleans, which proclaimed October 2, 1996 Shaykh Hassan Cisse Day.</p>
+    <p>Internationally, Shaykh Hassan Cisse (ra) has been recognized by the United Nations Population Fund (UNPFA) as a respected Islamic scholar and leader for his outstanding work and co-operation. He has constantly worked with the UNPFA towards achieving the goals set forth during the Cairo and Beijing conferences regarding human rights, to include family planning, the status of women, the education of girls, protection of children and the prevention of drug abuse. He has been recognised by the United Nations Children's Fund (UNICEF) for his scholarship, leadership, co-operation and advocacy regarding the issues vital to the health, education and well-being of children. The Shaykh has spoken extensively on these issues during his annual International Islamic Conferences in Senegal and The Gambia. As a result of his active involvement in human rights issues, Shaykh Ḥassan Cisse was invited to participate in a recent United Nations Conference for NGOs.</p>
+    <p>As the Founder and Chairman of The African American Islamic Institute, Inc., Shaykh Ḥassan Cisse (ra) has directed the guidelines for the Institute's humanitarian activities in keeping with the teachings of the religion of Islam. These activities feed the hungry, care for the sick, teach the unlettered, protect the interests of women and children, pursue knowledge, and foster peace and understanding among mankind. The Institute's objectives are to develop a capability for sustained self-help in the areas of education, agriculture, health care, economic development and cultural exchange.</p>
+    <p>Following the footsteps of his beloved grandfather, Shaykh Hassan Cisse (ra) continues to travel, introducing the teachings of Islam to many individuals while also receiving recognition as one of the spiritual leaders of more than 60,000,000 people around the world.</p>
+  `},
+
+  /* ===== WIRD ===== */
+  {group:"The Practices", id:"wird", title:"Wird", nav:"Wird", eyebrow:"Morning (Subḥa) & Evening (Asr)", isPractice:true,
+    summary:{
+      note:"The Wird is done in the morning (Subḥa) and in the evening (Asr).",
+      counts:[
+        ["Seeking Allāh's protection from shayṭān","Once"],
+        ["Sūrah al-Fātiḥah","Once"],
+        ["Astaghfirullāh","100×"],
+        ["Ṣalātul Fātiḥ (Ṣalātu ʾalā Nabī)","100×"],
+        ["Lā ilāha illā Allāh","100×"],
+      ]
+    },
+    timing:`
+      <h3>Best recommended time — Morning Wird</h3>
+      <ul class="clean">
+        <li>From the Dawn Prayer (Subḥa) up to one and a half hours after sunrise.</li>
+        <li>Its operative time extends until sunset, after which it is considered repayment.</li>
+        <li>Permissible before dawn at night, given the great reward for night worship.</li>
+        <li>It can be started two hours after ʾIshāʿ and continue to the break of dawn.</li>
+        <li>If dawn finds you still reciting, complete the Wird and repeat it after the Subḥa prayer.</li>
+      </ul>
+      <h3>Best recommended time — Evening Wird</h3>
+      <ul class="clean">
+        <li>Starts after the Asr Prayer; its imperative time extends up to dawn (Fajr).</li>
+        <li>It can be made up if missed in the specified time.</li>
+        <li>Not permissible to recite the evening Wird in advance in the daytime, even with an excuse.</li>
+        <li>Permissible to recite the coming day's Wird in advance at night if difficulties are expected — but in proper order (morning Wird followed by evening Wird).</li>
+        <li>If the Iqāmah is called, stop the Wird and pray, then continue from where you stopped. Prayers always take precedence over the Wird and Waẓīfah.</li>
+      </ul>
+      <h3>Perfect conditions for recitation</h3>
+      <p class="meta">If any of these conditions are violated without a valid reason, the Wird should be repeated with an extra 100 Istighfār.</p>
+      <ol class="num">
+        <li>Sit in prayer position and close the eyes while reading.</li>
+        <li>Face the Qibla.</li>
+        <li>Picture the Prophet (SAW), the Shaykh, or another pious Tijāni.</li>
+        <li>Concentrate on the words of the Ẓikr.</li>
+        <li>Recite Istʾāẓah, Bismillāh and Al-Fātiḥa before starting.</li>
+        <li>Begin each Ẓikr with the Quranic verse that orders it.</li>
+        <li>Make intention (niyyah) before beginning.</li>
+        <li>Read in the prescribed order.</li>
+        <li>Read silently (moving the lips); avoid reciting aloud.</li>
+        <li>Meditate a while after the Wird.</li>
+        <li>Do not eat or drink immediately after, to let the spiritual feeling subside.</li>
+        <li>Have purification — wudu, tayammum or ghusl.</li>
+        <li>Menstruating women may make the Wird if desired, or abstain.</li>
+        <li>It is optional for the sick, menstruating women, and women in post-childbirth bleeding to make up the Wird.</li>
+        <li>Body, clothes and place of worship must be clean.</li>
+        <li>Be dressed according to sharīʾah.</li>
+        <li>Observe proper manner (adab): no smiling, looking around, worldly thoughts, laughing, rushing, or reciting while drowsy.</li>
+        <li>Avoid talking unless necessary (e.g. replying to the Shaykh, parents, or husband).</li>
+      </ol>
+    `,
+    translit:[
+      ["Istʾāẓah","Once","Aʾūẓu billāhi minash shayṭāni Rajīm"],
+      ["Al-Fātiḥah","Once","Bismi-llāhir Raḥmānir Raḥīm · Al-Ḥamdu liLlāhi Rabbil ʾĀlamīn · Ar-Raḥmānir Raḥīm · Maliki Yawmmid Dīn · ʿIyyāka naʾbudu wa ʿIyyāka nastaʾīn · Ihdinaṣ Ṣirāṭal Mustaqīm · Ṣirāṭal ladhīna ʿanʾamta ʾalaihim · ghairil maghḍūbi ʾalaihim wa laḍ ḍālīn · Āmīn"],
+      ["Astaghfirullāh","100×","Astagfiru-llāh"],
+      ["Ṣalātul Fātiḥ","100×","Allāhumma ṣalli ʾalā Sayyidinā Muḥammadinil Fātiḥi limā ughliq · Wal khatimi limā sabaqa · Nāṣiril ḥaqqi bil ḥaqqi · Wal hādi ilā Ṣirātikal mustaqīm · Wa ʾalā ʿālihi, ḥaqqa qadrihi, wa miqdārihil ʾaẓīm"],
+      ["Lā ilāha illā Allāh","100×","Lā ilāha illā Allāh"],
+      ["Closing","","Sayyidunā Muḥammadu Rasūlullāh, ʾAlaihi Salāmu Allāh"],
+    ],
+    english:[
+      ["Istʾāẓah","Once","I seek refuge with Allāh from the accursed shayṭān."],
+      ["Al-Fātiḥah","Once","In the name of Allāh, The Most Gracious, The Most Merciful. Praise be to Allāh, the Cherisher and Sustainer of the worlds. The Most Gracious, The Most Merciful. Master of the Day of Judgement. Thee (Alone) do we worship, and Thine aid (Alone) do we seek. Show us the straight way — the way of those on whom Thou hast bestowed Thy Grace, those whose portion is not wrath, and who go not astray. Āmīn."],
+      ["Al-Istighfār","100×","I seek forgiveness from Allāh."],
+      ["Ṣalātul Fātiḥ","100×","O Allāh, bestow Your blessing upon our Prophet Muḥammad, who opened what was closed, who ended what preceded him, who aided the truth by the truth, who guides mankind to the straight path of Allāh; and to his family let this prayer be worthy for them in merits and in value equal to the Prophet's."],
+      ["At-Taḥlīl","100×","There is no God but Allāh."],
+      ["Closing","","May the peace of Allāh be upon our Master Muḥammad (SAW), the Messenger of Allāh."],
+    ],
+    arabic:[
+      ["Istʾāẓah","Once","أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ"],
+      ["Al-Fātiḥah","Once","بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ۝"],
+      ["Astaghfirullāh","100×","أَسْتَغْفِرُ اللهَ"],
+      ["Ṣalātul Fātiḥ","100×","اَللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ الْفَاتِحِ لِمَا أُغْلِقَ وَالْخَاتِمِ لِمَا سَبَقَ نَاصِرِ الْحَقِّ بِالْحَقِّ وَالْهَادِي إِلَى صِرَاطِكَ الْمُسْتَقِيمِ وَعَلَى آلِهِ حَقَّ قَدْرِهِ وَمِقْدَارِهِ الْعَظِيمِ"],
+      ["Lā ilāha illā Allāh","100×","لَا إِلٰهَ إِلَّا اللهُ"],
+    ],
+  },
+
+  /* ===== WAZIFAH ===== */
+  {group:"The Practices", id:"wazifah", title:"Waẓīfah", nav:"Waẓīfah", eyebrow:"Once within 24 hours", isPractice:true,
+    summary:{
+      note:"The Waẓīfah should be done once within 24 hours.",
+      counts:[
+        ["Istʾāẓah","Once"],
+        ["Al-Fātiḥah","Once"],
+        ["Al-Istighfār","30×"],
+        ["Ṣalātul Fātiḥ","50×"],
+        ["Lā ilāha illā Allāh","100×"],
+        ["Jawharatu al-Kamāl","12×"],
+      ]
+    },
+    timing:`
+      <h3>Conditions for the Waẓīfah</h3>
+      <ol class="num">
+        <li>The conditions governing the Waẓīfah are the same as those governing the Wird.</li>
+        <li>It should be performed aloud, sitting in a circle, except for an acceptable excuse.</li>
+        <li>The recitation should be in one voice.</li>
+        <li>Spread a clean white cloth in the centre of the ring when reciting Jawharatu al-Kamāl. The Holy Prophet (SAW) and the four Khalifs join the Waẓīfah at this point.</li>
+        <li>For Jawharatu al-Kamāl, ablution with water is obligatory. In the case of Tayammum, replace it with 20 Ṣalātul Fātiḥ.</li>
+        <li>It is permissible to recite on the back of an animal or in a vehicle on a journey, but the reciter should stop after the 7th Jawharatu al-Kamāl and sit to complete the remaining 5 — except where there is lack of security, in which case replace Jawharatu al-Kamāl with 20 Ṣalātul Fātiḥ.</li>
+        <li>A latecomer should join the group and proceed with them, reciting what was missed at the end.</li>
+        <li>During the 12th Jawharatu al-Kamāl, hands should be raised and opened.</li>
+        <li>While hands are still raised, offer prayers secretly; then wipe the face with the palms and shake hands with the brothers (sisters with sisters), from the right then the left.</li>
+        <li>The Imam takes responsibility for errors committed during the Waẓīfah.</li>
+        <li>The individual rectifies any errors by reciting 100 Astaghfirullāh, as in the Wird.</li>
+      </ol>
+    `,
+    translit:[
+      ["Istʾāẓah","Once","Aʾūẓu billāhi minash shayṭāni Rajīm"],
+      ["Al-Fātiḥah","Once","Bismi-llāhir Raḥmānir Raḥīm · Al-Ḥamdu liLlāhi Rabbil ʾĀlamīn · Ar-Raḥmānir Raḥīm · Maliki Yawmmid Dīn · ʿIyyāka naʾbudu wa ʿIyyāka nastaʾīn · Ihdinaṣ Ṣirāṭal Mustaqīm · Ṣirāṭal ladhīna ʿanʾamta ʾalaihim · ghairil maghḍūbi ʾalaihim wa laḍ ḍālīn · Āmīn"],
+      ["Al-Istighfār","30×","Astaghfiru Llāh al-ʾAẓīm alladhī Lā ilāha illā Huwal Ḥayyul Qayyūm"],
+      ["Ṣalātul Fātiḥ","50×","Allāhumma ṣalli ʾalā Sayyidinā Muḥammadinil Fātiḥi limā ughliq · Wal khatimi limā sabaqa · Nāṣiril ḥaqqi bil ḥaqqi · Wal hādi ilā Ṣirātikal mustaqīm · Wa ʾalā ʿālihi, ḥaqqa qadrihi, wa miqdārihil ʾaẓīm"],
+      ["At-Tasbīḥ","Once","Subḥāna Rabbika Rabbil ʾIzzati ʾammā yaṣifūn · Wa salāmun ʾalal Mursalīn · Wal Ḥamdu liLlahi Rabbil ʾĀlamīn"],
+      ["At-Taḥlīl","100×","Lā ilāha illā Allāh"],
+      ["At-Tadḥīl","Once","Sayyidunā Muḥammadur Rasūlu-llāh, ʾAlaihi Salāmu-Llāh"],
+      ["Jawharatu al-Kamāl","12×","Allāhumma ṣalli wa sallim ʾalā ʾAin-ir Raḥmatir Rabbāniyyati Wal yāqūtatil mutaḥaqqiqati Bi markazil fuhūmi wal maʾāni · Wa Nūril akwānil mutakawwinatil Ādami ṣāhibil ḥaqq-ir Rabbāni · Al-barqil asṭaʾi bi muzūnil arbāḥil māliʿati li kulli mutaʾarridin minal buḥūri wal awānī · Wa Nūrikal lāmiʾil ladhī malaʿta bihi kawnakal hāʿiṭa bi amkinatil makānī · Allāhumma ṣalli wa sallim ʾalā ʾainil ḥaqqil latī tatajallā minhā ʾurūshil ḥaqāʿiqi · ʾainil maʾārifil aqwam Ṣirāṭikat tāmmil asqam · Allāhumma ṣalli wa sallim ʾalā ṭalʾatil ḥaqqi bil ḥaqqil kanzil aʾẓam · Ifāḍatika minka ilaika iḥāṭatin nūril mutalsam · Ṣallāllāhu ʾalaihi wa ʾalā ʿālihi Ṣalātan tuʾarrifunā bihā ʿiyyāh"],
+      ["Inna Allāha","Once","Inna Allāha wa malāʿikatahu yuṣallūna ʾalā-n Nabī · Yā ayyuhal ladhīna āmanu Ṣallū ʾalayhi wa sallimū taslīmā · Wa ṣallā-Allāhu ʾalaihi wa ʾalā ālihi wa ṣaḥbihi wa sallama taslīmā · Subḥāna Rabbika Rabbil ʾIzzati ʾammā yaṣifūn · Wa Salāmun ʾala-l mursalīn · Wal ḥamdu li-l Lahi-r Rabbil ʾālamīn"],
+      ["Duʾas after Waẓīfah","","Ḥasbuna Allāhu wa Niʾmal Wakīl (450×) · Yā Laṭīf (129×) · Al-Fātiḥah (Once) · Ṣalātul Fātiḥ (10×) · Sūrah al-Ikhlāṣ (11×)"],
+    ],
+    english:[
+      ["Istʾāẓah","Once","I seek refuge with Allāh from the accursed shayṭān."],
+      ["Al-Fātiḥah","Once","In the name of Allāh, The Most Gracious, The Most Merciful. Praise be to Allāh, the Cherisher and Sustainer of the worlds. The Most Gracious, The Most Merciful. Master of the Day of Judgement. Thee (Alone) do we worship, and Thine aid (Alone) do we seek. Show us the straight way — the way of those on whom Thou hast bestowed Thy Grace, those whose portion is not wrath, and who go not astray. Āmīn."],
+      ["Al-Istighfār","30×","I ask forgiveness of Allāh the Great, Who there is no God but He, the Living, the Self-Subsisting."],
+      ["Ṣalātul Fātiḥ","50×","O Allāh, bestow Your blessing upon our Prophet Muḥammad, who opened what was closed, who ended what preceded him, who aided the truth by the truth, who guides mankind to the straight path of Allāh; and to his family let this prayer be worthy for them in merits and in value equal to the Prophet's."],
+      ["At-Tasbīḥ","Once","Glory to thy Lord, the Lord of Honour and Power — He is free from what they ascribe to Him."],
+      ["At-Taḥlīl","100×","There is no God but Allāh."],
+      ["At-Tadḥīl","Once","May the peace of Allāh be upon our Master Muḥammad, the Messenger of Allāh."],
+      ["Jawharatu al-Kamāl","12×","O Allāh, send benediction and salutations upon the source of divine mercy, a true ruby which encompasses the centre of comprehensions and meanings, the son of Ādam, the possessor of divine truth, the most luminous lighting in the profitable rain-clouds which fill all the intervening seas and receptacles, the bright light with which Thou hast filled Thy universe and which surrounds the places of existence. O Allāh, bless and salute the source of truth from which are manifested the tabernacles of realities, the source of knowledge, the most upright, Thy complete and most straight path. O Allāh, bless and salute the advent of truth by the truth, the greatest treasure, Thy mysterious light. May Allāh bless the Prophet and his household — a prayer that brings us to the knowledge of Him."],
+      ["Inna Allāha","Once","Indeed, Allāh and His angels send blessings upon the Prophet. O ye who believe, send your blessings upon him with a sense of reverence and gratitude. May the Blessings of Allāh be upon him, and upon his family and his companions, peace and gratitude. Glory to the Lord, the Lord of Majesty, from what they attribute. And peace be upon those sent. And praise be to Allāh, the Lord of the worlds. Āmīn."],
+    ],
+    arabic:[
+      ["Istʾāẓah","Once","أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ"],
+      ["Al-Fātiḥah","Once","بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ۝"],
+      ["Al-Istighfār","30×","أَسْتَغْفِرُ اللهَ الْعَظِيمَ الَّذِي لَا إِلٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ"],
+      ["Ṣalātul Fātiḥ","50×","اَللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ الْفَاتِحِ لِمَا أُغْلِقَ وَالْخَاتِمِ لِمَا سَبَقَ نَاصِرِ الْحَقِّ بِالْحَقِّ وَالْهَادِي إِلَى صِرَاطِكَ الْمُسْتَقِيمِ وَعَلَى آلِهِ حَقَّ قَدْرِهِ وَمِقْدَارِهِ الْعَظِيمِ"],
+      ["At-Tasbīḥ","Once","سُبْحَانَ رَبِّكَ رَبِّ الْعِزَّةِ عَمَّا يَصِفُونَ ۝ وَسَلَامٌ عَلَى الْمُرْسَلِينَ ۝ وَالْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ ۝"],
+      ["At-Taḥlīl","100×","لَا إِلٰهَ إِلَّا اللهُ"],
+      ["At-Tadḥīl","Once","سَيِّدُنَا مُحَمَّدٌ رَسُولُ اللهِ عَلَيْهِ سَلَامُ اللهِ"],
+      ["Jawharatu al-Kamāl","12×","اَللّٰهُمَّ صَلِّ وَسَلِّمْ عَلَى عَيْنِ الرَّحْمَةِ الرَّبَّانِيَّةِ وَالْيَاقُوتَةِ الْمُتَحَقِّقَةِ الْحَائِطَةِ بِمَرْكَزِ الْفُهُومِ وَالْمَعَانِي وَنُورِ الْأَكْوَانِ الْمُتَكَوِّنَةِ الْآدَمِيِّ صَاحِبِ الْحَقِّ الرَّبَّانِيِّ الْبَرْقِ الْأَسْطَعِ بِمُزُونِ الْأَرْبَاحِ الْمَالِئَةِ لِكُلِّ مُتَعَرِّضٍ مِنَ الْبُحُورِ وَالْأَوَانِي وَنُورِكَ اللَّامِعِ الَّذِي مَلَأْتَ بِهِ كَوْنَكَ الْحَائِطَ بِأَمْكِنَةِ الْمَكَانِي. اَللّٰهُمَّ صَلِّ وَسَلِّمْ عَلَى عَيْنِ الْحَقِّ الَّتِي تَتَجَلَّى مِنْهَا عُرُوشُ الْحَقَائِقِ عَيْنِ الْمَعَارِفِ الْأَقْوَمِ صِرَاطِكَ التَّامِّ الْأَسْقَمِ. اَللّٰهُمَّ صَلِّ وَسَلِّمْ عَلَى طَلْعَةِ الْحَقِّ بِالْحَقِّ الْكَنْزِ الْأَعْظَمِ إِفَاضَتِكَ مِنْكَ إِلَيْكَ إِحَاطَةِ النُّورِ الْمُطَلْسَمِ. صَلَّى اللهُ عَلَيْهِ وَعَلَى آلِهِ صَلَاةً تُعَرِّفُنَا بِهَا إِيَّاهُ"],
+      ["Inna Allāha","Once","إِنَّ اللهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ ۝ يَا أَيُّهَا الَّذِينَ آمَنُوا صَلُّوا عَلَيْهِ وَسَلِّمُوا تَسْلِيمًا ۝ وَصَلَّى اللهُ عَلَيْهِ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ تَسْلِيمًا ۝ سُبْحَانَ رَبِّكَ رَبِّ الْعِزَّةِ عَمَّا يَصِفُونَ ۝ وَسَلَامٌ عَلَى الْمُرْسَلِينَ ۝ وَالْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ ۝"],
+    ],
+  },
+
+  /* ===== ZIKRUL JUMUAH ===== */
+  {group:"The Practices", id:"jumuah", title:"Ẓikrul Jumuʾah", nav:"Ẓikrul Jumuʾah", eyebrow:"Friday evening, one hour before sunset", isPractice:true,
+    summary:{
+      note:"Ẓikrul Jumuʾah should be done every Friday evening in congregation, one hour before sunset.",
+      counts:[
+        ["Istʾāẓah","Once"],
+        ["Al-Fātiḥah","Once"],
+        ["Al-Istighfār","3×"],
+        ["Ṣalātul Fātiḥ","3×"],
+        ["At-Tasbīḥ","Once"],
+        ["At-Taḥlīl (Lā ilāha illā Allāh)","1000–1600×"],
+        ["Al-Fātiḥah","Once"],
+        ["Ṣalātul Fātiḥ","3×"],
+        ["Inna Allāha","Once"],
+      ]
+    },
+    timing:`
+      <h3>Conditions for Ẓikrul Jumuʾah</h3>
+      <ol class="num">
+        <li>Haila Allāh / Ẓikrul Jumuʾah is strictly instructed to be performed after Asr prayers on Friday.</li>
+        <li>The congregation of people is a necessary condition if possible; otherwise it should be performed individually.</li>
+        <li>It should be recited aloud in one voice, sitting in a circle.</li>
+        <li>If the individual prefers, he may recite Lā ilāha illā Allāh 1,000 times or more. The next best figure is 1,600, which Shaykh Tijāni used to recite; otherwise one can continue without counting.</li>
+      </ol>
+    `,
+    translit:[
+      ["Istʾāẓah","Once","Aʾūẓu billāhi minash shayṭāni Rajīm"],
+      ["Al-Fātiḥah","Once","Bismi-llāhir Raḥmānir Raḥīm · Al-Ḥamdu liLlāhi Rabbil ʾĀlamīn · Ar-Raḥmānir Raḥīm · Maliki Yawmmid Dīn · ʿIyyāka naʾbudu wa ʿIyyāka nastaʾīn · Ihdinaṣ Ṣirāṭal Mustaqīm · Ṣirāṭal ladhīna ʿanʾamta ʾalaihim · ghairil maghḍūbi ʾalaihim wa laḍ ḍālīn · Āmīn"],
+      ["Al-Istighfār","3×","Astaghfiru Llāh al-ʾAẓīm alladhī Lā ilāha illā Huwal Ḥayyul Qayyūm"],
+      ["Ṣalātul Fātiḥ","3×","Allāhumma ṣalli ʾalā Sayyidinā Muḥammadinil Fātiḥi limā ughliq · Wal khatimi limā sabaqa · Nāṣiril ḥaqqi bil ḥaqqi · Wal hādi ilā Ṣirātikal mustaqīm · Wa ʾalā ʿālihi, ḥaqqa qadrihi, wa miqdārihil ʾaẓīm"],
+      ["At-Tasbīḥ","Once","Subḥāna Rabbika Rabbil ʾIzzati ʾammā yaṣifūn · Wa salāmun ʾalal Mursalīn · Wal Ḥamdu liLlahi Rabbil ʾĀlamīn"],
+      ["At-Taḥlīl","1000–1600×","Lā ilāha illā Allāh"],
+      ["At-Tadḥīl","Once","Sayyidunā Muḥammadur Rasūlu-llāh, ʾAlaihi Salāmu-Llāh"],
+      ["Al-Fātiḥah","Once","Bismi-llāhir Raḥmānir Raḥīm · Al-Ḥamdu liLlāhi Rabbil ʾĀlamīn · Ar-Raḥmānir Raḥīm · Maliki Yawmmid Dīn · ʿIyyāka naʾbudu wa ʿIyyāka nastaʾīn · Ihdinaṣ Ṣirāṭal Mustaqīm · Ṣirāṭal ladhīna ʿanʾamta ʾalaihim · ghairil maghḍūbi ʾalaihim wa laḍ ḍālīn · Āmīn"],
+      ["Ṣalātul Fātiḥ","3×","Allāhumma ṣalli ʾalā Sayyidinā Muḥammadinil Fātiḥi limā ughliq · Wal khatimi limā sabaqa · Nāṣiril ḥaqqi bil ḥaqqi · Wal hādi ilā Ṣirātikal mustaqīm · Wa ʾalā ʿālihi, ḥaqqa qadrihi, wa miqdārihil ʾaẓīm"],
+      ["Inna Allāha","Once","Inna Allāha wa malāʿikatahu yuṣallūna ʾalā-n Nabī · Yā ayyuhal ladhīna āmanu Ṣallū ʾalayhi wa sallimū taslīmā · Wa ṣallā-Allāhu ʾalaihi wa ʾalā ālihi wa ṣaḥbihi wa sallama taslīmā · Subḥāna Rabbika Rabbil ʾIzzati ʾammā yaṣifūn · Wa Salāmun ʾala-l mursalīn · Wal ḥamdu li-l Lahi-r Rabbil ʾālamīn"],
+    ],
+    english:[
+      ["Istʾāẓah","Once","I seek refuge with Allāh from the accursed shayṭān."],
+      ["Al-Fātiḥah","Once","In the name of Allāh, The Most Gracious, The Most Merciful. Praise be to Allāh, the Cherisher and Sustainer of the worlds. The Most Gracious, The Most Merciful. Master of the Day of Judgement. Thee (Alone) do we worship, and Thine aid (Alone) do we seek. Show us the straight way — the way of those on whom Thou hast bestowed Thy Grace, those whose portion is not wrath, and who go not astray. Āmīn."],
+      ["Al-Istighfār","3×","I ask forgiveness of Allāh the Great, Who there is no God but He, the Living, the Self-Subsisting."],
+      ["Ṣalātul Fātiḥ","3×","O Allāh, bestow Your blessing upon our Prophet Muḥammad, who opened what was closed, who ended what preceded him, who aided the truth by the truth, who guides mankind to the straight path of Allāh; and to his family let this prayer be worthy for them in merits and in value equal to the Prophet's."],
+      ["At-Tasbīḥ","Once","Glory to thy Lord, the Lord of Honour and Power — He is free from what they ascribe to Him. And peace be upon those sent. And praise be to Allāh, the Lord of the worlds."],
+      ["At-Taḥlīl","1000–1600×","There is no God but Allāh."],
+      ["At-Tadḥīl","Once","May the peace of Allāh be upon our Master Muḥammad, the Messenger of Allāh."],
+      ["Al-Fātiḥah","Once","In the name of Allāh, The Most Gracious, The Most Merciful. Praise be to Allāh, the Cherisher and Sustainer of the worlds. The Most Gracious, The Most Merciful. Master of the Day of Judgement. Thee (Alone) do we worship, and Thine aid (Alone) do we seek. Show us the straight way — the way of those on whom Thou hast bestowed Thy Grace, those whose portion is not wrath, and who go not astray. Āmīn."],
+      ["Ṣalātul Fātiḥ","3×","O Allāh, bestow Your blessing upon our Prophet Muḥammad, who opened what was closed, who ended what preceded him, who aided the truth by the truth, who guides mankind to the straight path of Allāh; and to his family let this prayer be worthy for them in merits and in value equal to the Prophet's."],
+      ["Inna Allāha","Once","Indeed, Allāh and His angels send blessings upon the Prophet. O ye who believe, send your blessings upon him with a sense of reverence and gratitude. May the Blessings of Allāh be upon him, and upon his family and his companions, peace and gratitude. Glory to the Lord, the Lord of Majesty, from what they attribute. And peace be upon those sent. And praise be to Allāh, the Lord of the worlds. Āmīn."],
+    ],
+    arabic:[
+      ["Istʾāẓah","Once","أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ"],
+      ["Al-Fātiḥah","Once","بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ۝"],
+      ["Al-Istighfār","3×","أَسْتَغْفِرُ اللهَ الْعَظِيمَ الَّذِي لَا إِلٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ"],
+      ["Ṣalātul Fātiḥ","3×","اَللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ الْفَاتِحِ لِمَا أُغْلِقَ وَالْخَاتِمِ لِمَا سَبَقَ نَاصِرِ الْحَقِّ بِالْحَقِّ وَالْهَادِي إِلَى صِرَاطِكَ الْمُسْتَقِيمِ وَعَلَى آلِهِ حَقَّ قَدْرِهِ وَمِقْدَارِهِ الْعَظِيمِ"],
+      ["At-Tasbīḥ","Once","سُبْحَانَ رَبِّكَ رَبِّ الْعِزَّةِ عَمَّا يَصِفُونَ ۝ وَسَلَامٌ عَلَى الْمُرْسَلِينَ ۝ وَالْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ ۝"],
+      ["At-Taḥlīl","1000–1600×","لَا إِلٰهَ إِلَّا اللهُ"],
+      ["At-Tadḥīl","Once","سَيِّدُنَا مُحَمَّدٌ رَسُولُ اللهِ عَلَيْهِ سَلَامُ اللهِ"],
+      ["Al-Fātiḥah","Once","بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ۝"],
+      ["Ṣalātul Fātiḥ","3×","اَللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ الْفَاتِحِ لِمَا أُغْلِقَ وَالْخَاتِمِ لِمَا سَبَقَ نَاصِرِ الْحَقِّ بِالْحَقِّ وَالْهَادِي إِلَى صِرَاطِكَ الْمُسْتَقِيمِ وَعَلَى آلِهِ حَقَّ قَدْرِهِ وَمِقْدَارِهِ الْعَظِيمِ"],
+      ["Inna Allāha","Once","إِنَّ اللهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ ۝ يَا أَيُّهَا الَّذِينَ آمَنُوا صَلُّوا عَلَيْهِ وَسَلِّمُوا تَسْلِيمًا ۝ وَصَلَّى اللهُ عَلَيْهِ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ تَسْلِيمًا ۝ سُبْحَانَ رَبِّكَ رَبِّ الْعِزَّةِ عَمَّا يَصِفُونَ ۝ وَسَلَامٌ عَلَى الْمُرْسَلِينَ ۝ وَالْحَمْدُ لِلهِ رَبِّ الْعَالَمِينَ ۝"],
+    ],
+  },
+];
+
+/* ============ RENDER ============ */
+const nav = document.getElementById('nav');
+const content = document.getElementById('content');
+let lastGroup = '';
+
+function versesHTML(arr, cls){
+  return arr.map(([label,times,body])=>`
+    <div class="verse ${cls}">
+      <div class="verse-label"><span>${label}</span>${times?`<span class="times">${times}</span>`:''}</div>
+      <div class="body">${body}</div>
+    </div>`).join('');
+}
+
+SECTIONS.forEach(s=>{
+  if(s.group!==lastGroup){
+    const g=document.createElement('div');g.className='nav-group';g.textContent=s.group;nav.appendChild(g);lastGroup=s.group;
+  }
+  const a=document.createElement('a');a.textContent=s.nav;a.dataset.target=s.id;nav.appendChild(a);
+
+  const sec=document.createElement('section');sec.id=s.id;sec.dataset.title=s.title;
+  let inner = (s.eyebrow?`<div class="eyebrow">${s.eyebrow}</div>`:'') +
+    `<h2 class="title">${s.title}</h2><div class="rule"></div>`;
+
+  if(s.isPractice){
+    inner += `<div class="practice-summary">
+        <p class="meta" style="margin-bottom:14px">${s.summary.note}</p>
+        ${s.summary.counts.map(([n,c])=>`<div class="count-row"><span>${n}</span><span class="ct">${c}</span></div>`).join('')}
+      </div>`;
+    inner += `<div class="tabs">
+        <button class="tab active" data-pane="t-${s.id}">Transliteration</button>
+        <button class="tab" data-pane="e-${s.id}">English</button>
+        <button class="tab" data-pane="a-${s.id}">العربية</button>
+        <button class="tab" data-pane="c-${s.id}">Conditions</button>
+      </div>`;
+    inner += `<div class="pane active" id="t-${s.id}">${versesHTML(s.translit,'translit')}</div>`;
+    inner += `<div class="pane" id="e-${s.id}">${versesHTML(s.english,'english')}</div>`;
+    inner += `<div class="pane" id="a-${s.id}">${versesHTML(s.arabic,'arabic')}</div>`;
+    inner += `<div class="pane" id="c-${s.id}">${s.timing}</div>`;
+  } else {
+    inner += s.html;
+  }
+  sec.innerHTML=inner;
+  content.appendChild(sec);
+});
+
+/* tab switching */
+content.addEventListener('click',e=>{
+  const t=e.target.closest('.tab');if(!t)return;
+  const wrap=t.closest('section');
+  wrap.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  wrap.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.pane).classList.add('active');
+});
+
+/* nav click */
+nav.addEventListener('click',e=>{
+  const a=e.target.closest('a');if(!a)return;
+  document.getElementById(a.dataset.target).scrollIntoView();
+  closeSidebar();
+});
+
+/* scrollspy + position memory */
+const links=[...nav.querySelectorAll('a')];
+const secs=[...document.querySelectorAll('section')];
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      const id=en.target.id;
+      links.forEach(l=>l.classList.toggle('active',l.dataset.target===id));
+      try{localStorage.setItem('tj-pos',id)}catch(_){}
+    }
+  });
+},{rootMargin:'-30% 0px -60% 0px'});
+secs.forEach(s=>obs.observe(s));
+
+/* ============ FONT SIZE ============ */
+let fs=parseInt(localStorage.getItem('tj-fs')||'18');
+function applyFS(){document.documentElement.style.setProperty('--fs',fs+'px');localStorage.setItem('tj-fs',fs)}
+applyFS();
+document.getElementById('fsUp').onclick=()=>{fs=Math.min(fs+1,26);applyFS()};
+document.getElementById('fsDown').onclick=()=>{fs=Math.max(fs-1,14);applyFS()};
+
+/* ============ THEME ============ */
+const themeBtn=document.getElementById('themeBtn');
+function setTheme(t){
+  document.documentElement.dataset.theme=t;
+  themeBtn.textContent = t==='dark'?'☀':'☾';
+  localStorage.setItem('tj-theme',t);
+}
+setTheme(localStorage.getItem('tj-theme') || (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));
+themeBtn.onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+
+/* ============ SIDEBAR (mobile) ============ */
+const sidebar=document.getElementById('sidebar');
+const overlay=document.getElementById('overlay');
+function openSidebar(){sidebar.classList.add('open');overlay.classList.add('show')}
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('show')}
+document.getElementById('menuBtn').onclick=openSidebar;
+overlay.onclick=closeSidebar;
+
+/* ============ DRAW TIJĀNĪ SUBḤA (faithful structure) ============ */
+/* Tijānī tasbīḥ: 100 beads on a closed loop, partitioned 12·22·34·22·12 by
+   four larger "nukhta" divider beads, with an "alif" head-piece + tassel
+   hanging from the join at the bottom. */
+(function(){
+  const loop=document.getElementById('bead-loop');
+  const tassel=document.getElementById('tassel');
+  if(!loop)return;
+  const SVGNS='http://www.w3.org/2000/svg';
+  function bead(x,y,r,filled){
+    const c=document.createElementNS(SVGNS,'circle');
+    c.setAttribute('cx',x.toFixed(2));c.setAttribute('cy',y.toFixed(2));c.setAttribute('r',r);
+    if(filled)c.setAttribute('class','nukhta');
+    loop.appendChild(c);return c;
+  }
+  const cx=150, cy=128, rx=96, ry=78;
+  const small=6.2, big=9.5;        // ordinary bead vs nukhta divider
+  // Faithful schematic: keep the defining Tijānī 12·22·34·22·12 *proportion* and the
+  // four gold nukhta dividers, but render a legible subset (scaled ÷2) so the
+  // structure reads clearly at icon size rather than cramming 100 dots together.
+  const sections=[6,11,17,11,6];   // half of 12·22·34·22·12, same proportions
+  // Build an ordered list of "slots": ordinary beads with a nukhta after each section.
+  const slots=[];
+  sections.forEach((count,si)=>{
+    for(let i=0;i<count;i++)slots.push('b');
+    if(si<sections.length-1)slots.push('n'); // divider between sections (4 total)
+  });
+  // Leave a gap at the very bottom (where the alif/tassel joins). Distribute slots
+  // around the ellipse over an arc that stops short of the bottom centre.
+  const gap=0.34;                              // radians of opening at the bottom
+  const startA=Math.PI/2+gap/2;                // just past bottom, going clockwise
+  const sweep=2*Math.PI-gap;
+  const n=slots.length;
+  for(let i=0;i<n;i++){
+    const a=startA + sweep*(i/(n-1));
+    const x=cx+rx*Math.cos(a);
+    const y=cy-ry*Math.sin(a); // minus so we go up over the top
+    if(slots[i]==='n')bead(x,y,big,true);
+    else bead(x,y,small,false);
+  }
+  // ---- Alif head-piece + tassel hanging from the bottom join ----
+  const topY=cy+ry+2;
+  // the "alif": an elongated head bead
+  const alif=document.createElementNS(SVGNS,'ellipse');
+  alif.setAttribute('cx',cx);alif.setAttribute('cy',topY+10);
+  alif.setAttribute('rx',6.5);alif.setAttribute('ry',13);
+  alif.setAttribute('class','nukhta');
+  tassel.appendChild(alif);
+  // small stacked beads below the alif
+  let yy=topY+30;
+  [5.5,5,4.6].forEach(r=>{
+    const c=document.createElementNS(SVGNS,'circle');
+    c.setAttribute('cx',cx);c.setAttribute('cy',yy);c.setAttribute('r',r);
+    c.setAttribute('class','nukhta');tassel.appendChild(c);yy+=r*2+3;
+  });
+  // a slim connecting line through the tassel
+  const line=document.createElementNS(SVGNS,'line');
+  line.setAttribute('x1',cx);line.setAttribute('y1',topY-4);
+  line.setAttribute('x2',cx);line.setAttribute('y2',yy-4);
+  line.setAttribute('stroke','currentColor');line.setAttribute('stroke-width','1');
+  line.setAttribute('opacity','.5');tassel.insertBefore(line,tassel.firstChild);
+})();
+
+/* ============ COVER: Begin button ============ */
+const enterBtn=document.getElementById('enterBtn');
+if(enterBtn){
+  enterBtn.onclick=()=>{
+    const first=document.getElementById('about');
+    if(first)first.scrollIntoView({behavior:'smooth'});
+  };
+}
+
+/* ============ RESTORE POSITION ============ */
+window.addEventListener('load',()=>{
+  try{
+    const pos=localStorage.getItem('tj-pos');
+    if(pos && pos!=='about' && document.getElementById(pos)){
+      document.getElementById(pos).scrollIntoView();
+    }
+  }catch(_){}
+});
+</script>
+</body>
+</html>
